@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#087e83">
+  <meta name="description" content="CarePoint Clinic demonstration clinical records management system.">
+  <title>Clinical Records Management System | CarePoint Clinic</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" data-page="dashboard" aria-label="CarePoint Clinic dashboard">
+        <span class="brand-mark" aria-hidden="true">✚</span>
+        <span><strong>CarePoint</strong><small>CLINIC</small></span>
+      </a>
+      <div class="nav-caption">WORKSPACE</div>
+      <nav class="primary-nav" id="primaryNav" aria-label="Workspace">
+        <button class="nav-link active" type="button" data-page="dashboard"><span aria-hidden="true">▦</span> Dashboard</button>
+        <button class="nav-link" type="button" data-page="patients"><span aria-hidden="true">♙</span> Patients</button>
+        <button class="nav-link" type="button" data-page="consultations"><span aria-hidden="true">▤</span> Consultations</button>
+        <button class="nav-link" type="button" data-page="appointments"><span aria-hidden="true">▣</span> Appointments</button>
+        <button class="nav-link" type="button" data-page="reports"><span aria-hidden="true">▥</span> Reports</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="demo-callout"><span aria-hidden="true">ⓘ</span><p><strong>Demo environment</strong><br>Use fictional data only.</p></div>
+        <button class="nav-link" id="loadSampleButton" type="button"><span aria-hidden="true">↻</span> Load sample data</button>
+        <button class="nav-link danger-link admin-only" id="clearDataButton" type="button"><span aria-hidden="true">⌫</span> Clear demo data</button>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <button class="icon-button mobile-menu-button" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <div class="topbar-clinic"><span class="clinic-dot" aria-hidden="true"></span><strong>CarePoint Clinic</strong><span class="topbar-divider"></span><span id="currentDate"></span></div>
+        <div class="topbar-actions">
+          <label class="global-search"><span aria-hidden="true">⌕</span><span class="sr-only">Search patients by name or ID</span><input id="globalSearch" type="search" placeholder="Search patients..." autocomplete="off"></label>
+          <div class="profile-wrap">
+            <span class="avatar" aria-hidden="true" id="profileAvatar">AD</span>
+            <div class="profile-copy"><strong id="profileName">Administrator</strong><small id="profileRole">Administrator</small></div>
+            <button type="button" class="text-button" id="logoutButton">Log out</button>
+          </div>
+        </div>
+      </header>
+
+      <main id="mainContent" tabindex="-1">
+        <section class="page-section active" id="page-dashboard" aria-labelledby="pageTitle">
+          <div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1 id="pageTitle">Good day, <span id="greetingName">Administrator</span></h1><p class="muted">Here’s what’s happening at your clinic today.</p></div>
+            <div class="heading-actions"><button class="button button-secondary reception-action" type="button" data-action="new-appointment">＋ Appointment</button><button class="button button-primary clinician-action" type="button" data-action="new-consultation">＋ New consultation</button></div>
+          </div>
+          <div class="stat-grid" id="dashboardStats" aria-live="polite"></div>
+          <div class="dashboard-grid">
+            <article class="card"><div class="card-heading"><div><h2>Recently registered</h2><p class="muted">New patients added to the clinic</p></div><button class="text-button" data-navigate="patients" type="button">View all →</button></div><div id="recentPatients"></div></article>
+            <article class="card"><div class="card-heading"><div><h2>Recent consultations</h2><p class="muted">Latest clinical visits</p></div><button class="text-button" data-navigate="consultations" type="button">View all →</button></div><div id="recentConsultations"></div></article>
+          </div>
+          <article class="card schedule-card"><div class="card-heading"><div><h2>Today’s schedule</h2><p class="muted">Upcoming appointments for today</p></div><button class="text-button" data-navigate="appointments" type="button">Full schedule →</button></div><div id="dashboardSchedule"></div></article>
+        </section>
+
+        <section class="page-section" id="page-patients" aria-labelledby="patientsTitle" hidden>
+          <div class="page-heading"><div><p class="eyebrow">CARE DIRECTORY</p><h1 id="patientsTitle">Patients</h1><p class="muted">Manage patient profiles and clinical records.</p></div><button class="button button-primary reception-action" type="button" data-action="new-patient">＋ Register patient</button></div>
+          <article class="card table-card"><div class="toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><span class="sr-only">Search patients</span><input id="patientSearch" type="search" placeholder="Search name or patient ID"></label><label class="filter-label">Sex <select id="patientSexFilter"><option value="">All</option><option>Female</option><option>Male</option><option>Other</option><option>Prefer not to say</option></select></label><label class="filter-label">Sort <select id="patientSort"><option value="newest">Recently registered</option><option value="name">Name A–Z</option><option value="oldest">Oldest registered</option></select></label><span class="result-count" id="patientCount"></span></div><div id="patientsTable"></div><div class="pagination" id="patientsPagination"></div></article>
+        </section>
+
+        <section class="page-section" id="page-consultations" aria-labelledby="consultationsTitle" hidden>
+          <div class="page-heading"><div><p class="eyebrow">CLINICAL CARE</p><h1 id="consultationsTitle">Consultations</h1><p class="muted">Record and review patient visits.</p></div><button class="button button-primary clinician-action" type="button" data-action="new-consultation">＋ New consultation</button></div>
+          <article class="card table-card"><div class="toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><span class="sr-only">Search consultations</span><input id="consultationSearch" type="search" placeholder="Search patient, ID, diagnosis"></label><label class="filter-label">Date <input id="consultationDateFilter" type="date"></label><span class="result-count" id="consultationCount"></span></div><div id="consultationsTable"></div><div class="pagination" id="consultationsPagination"></div></article>
+        </section>
+
+        <section class="page-section" id="page-appointments" aria-labelledby="appointmentsTitle" hidden>
+          <div class="page-heading"><div><p class="eyebrow">CLINIC OPERATIONS</p><h1 id="appointmentsTitle">Appointments</h1><p class="muted">Coordinate and track patient visits.</p></div><button class="button button-primary reception-action" type="button" data-action="new-appointment">＋ Schedule appointment</button></div>
+          <article class="card table-card"><div class="toolbar"><div class="segmented" role="tablist" aria-label="Appointment view"><button type="button" class="segment active" role="tab" aria-selected="true" data-appointment-view="all">All appointments</button><button type="button" class="segment" role="tab" aria-selected="false" data-appointment-view="today">Today’s schedule</button></div><label class="search-field"><span aria-hidden="true">⌕</span><span class="sr-only">Search appointments</span><input id="appointmentSearch" type="search" placeholder="Search patient or reason"></label><label class="filter-label">Status <select id="appointmentStatusFilter"><option value="">All statuses</option><option>Scheduled</option><option>Completed</option><option>Cancelled</option><option>No-show</option></select></label></div><div id="appointmentsTable"></div><div class="pagination" id="appointmentsPagination"></div></article>
+        </section>
+
+        <section class="page-section" id="page-record" aria-labelledby="recordTitle" hidden>
+          <div class="page-heading"><div><button class="back-link" type="button" data-navigate="patients">← Back to patients</button><p class="eyebrow">ELECTRONIC MEDICAL RECORD</p><h1 id="recordTitle">Patient chart</h1><p class="muted" id="recordSubtitle"></p></div><div class="heading-actions"><button class="button button-secondary" type="button" id="printRecordButton">⎙ Print record</button><button class="button button-primary clinician-action" type="button" data-action="new-consultation" id="recordConsultationButton">＋ Consultation</button></div></div>
+          <div id="recordSummary"></div>
+          <div class="tabs" role="tablist" aria-label="Patient record sections" id="recordTabs">
+            <button type="button" role="tab" aria-selected="true" class="tab active" data-record-tab="overview">Overview</button>
+            <button type="button" role="tab" aria-selected="false" class="tab" data-record-tab="history">Medical History</button>
+            <button type="button" role="tab" aria-selected="false" class="tab" data-record-tab="consultations">Consultations</button>
+            <button type="button" role="tab" aria-selected="false" class="tab" data-record-tab="medications">Medications</button>
+            <button type="button" role="tab" aria-selected="false" class="tab" data-record-tab="labs">Laboratory Results</button>
+          </div>
+          <div id="recordPanel" role="tabpanel" tabindex="0" aria-labelledby="recordTabs"></div>
+          <div class="print-only" id="recordPrintContent"></div>
+        </section>
+
+        <section class="page-section" id="page-reports" aria-labelledby="reportsTitle" hidden>
+          <div class="page-heading"><div><p class="eyebrow">INSIGHTS</p><h1 id="reportsTitle">Reports</h1><p class="muted">Review clinic activity for a selected period.</p></div><button class="button button-secondary" type="button" id="printReportButton">⎙ Print report</button></div>
+          <article class="card report-controls"><label>From <input id="reportFrom" type="date"></label><label>To <input id="reportTo" type="date"></label><button class="button button-primary" type="button" id="applyReportButton">Apply dates</button><div class="export-actions"><button class="button button-secondary" type="button" id="exportPatientsButton">↓ Export patients CSV</button><button class="button button-secondary" type="button" id="exportConsultationsButton">↓ Export consultations CSV</button></div></article>
+          <div id="reportSummary"></div><div class="report-grid"><article class="card"><div class="card-heading"><div><h2>Consultations by date</h2><p class="muted">Visit volume in selected period</p></div></div><div id="consultationReport"></div></article><article class="card"><div class="card-heading"><div><h2>Appointment summary</h2><p class="muted">Status breakdown in selected period</p></div></div><div id="appointmentReport"></div></article></div>
+        </section>
+      </main>
+      <footer class="app-footer"><span>CarePoint Clinic · Clinical Records Management System</span><span>Demonstration only · Use fictional data</span></footer>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" id="modalDialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <div class="modal-heading"><div><p class="eyebrow" id="modalEyebrow">CAREPOINT CLINIC</p><h2 id="modalTitle">Dialog</h2></div><button class="icon-button" id="modalClose" type="button" aria-label="Close dialog">×</button></div>
+      <div class="modal-body" id="modalBody"></div>
+    </section>
+  </div>
+  <div class="login-overlay" id="loginOverlay" hidden></div>
+</body>
+</html>
